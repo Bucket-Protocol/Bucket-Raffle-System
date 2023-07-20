@@ -13,9 +13,10 @@ import useGetTx from '../lib/hooks/useGetTx';
 
 export default function CreateCoinRaffle() {
   const walletKit = useWalletKit();
-  const { currentAccount } = walletKit;
+  const network = walletKit.currentAccount?.chains[0].split('sui:')[1];
+  const provider = getSuiProvider(network);
   const { coins, refetchCoins, loadingCoins } = useCoins();
-  const { getRaffleObjId } = useGetTx();
+  const { getRaffleObjId } = useGetTx(provider);
   console.log('coins:', coins);
   const [raffleName, setRaffleName] = useState('My Raffle');
   const [prizeBalance, setPrizeBalance] = useState(0);
@@ -35,7 +36,7 @@ export default function CreateCoinRaffle() {
   });
 
   useEffect(() => {
-    if (currentAccount && startRaffleDigest) {
+    if (walletKit.currentAccount && startRaffleDigest) {
       const raffleObjId = getRaffleObjId(startRaffleDigest);
       setCurrentRaffleObjId(raffleObjId);
     }
@@ -89,9 +90,6 @@ export default function CreateCoinRaffle() {
     setGettingRaffleIdByDigest(true);
     let run = async () => {
       try {
-        let network = walletKit.currentAccount.chains[0].split('sui:')[1];
-        let provider = getSuiProvider(network);
-        // console.log('walletKit:', walletKit);
         console.log(
           'let transactionBlock = await provider.getTransactionBlock({'
         );

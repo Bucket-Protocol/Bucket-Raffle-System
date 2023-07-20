@@ -1,7 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { TransactionDigest } from '@mysten/sui.js';
-import { useWalletKit } from '@mysten/wallet-kit';
-import getSuiProvider from '@/lib/getSuiProvider';
+import { JsonRpcProvider, TransactionDigest } from '@mysten/sui.js';
 
 type CreateObjType = {
   sender: string;
@@ -25,12 +23,7 @@ type CreateObjType = {
     | 'Immutable';
 };
 
-const useGetTx = async () => {
-  const walletKit = useWalletKit();
-  const { currentAccount } = walletKit;
-  const network = currentAccount?.chains[0].split('sui:')[1];
-  const provider = getSuiProvider(network);
-
+const useGetTx = async (provider: JsonRpcProvider) => {
   const getRaffleObjId = async (txDigest: TransactionDigest) => {
     try {
       const transactionBlock = await provider?.getTransactionBlock({

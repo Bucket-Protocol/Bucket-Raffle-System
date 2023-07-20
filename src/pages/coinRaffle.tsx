@@ -1,13 +1,9 @@
 import { WalletKitProvider } from '@mysten/wallet-kit';
 import * as React from 'react';
-
 import Layout from '@/components/layout/Layout';
 import Seo from '@/components/Seo';
-
 import Navbar from '../components/Navbar';
-
 import { PreviousCoinRaffles } from '../components/PreviousCoinRaffles';
-import Script from 'next/script';
 import 'flowbite';
 import CreateCoinRaffle from '../components/CreateCoinRaffle';
 /**
@@ -22,20 +18,18 @@ import CreateCoinRaffle from '../components/CreateCoinRaffle';
 // Before you begin editing, follow all comments with `STARTERCONF`,
 // to customize the default configuration.
 
-export default function HomePage() {
+export default function CoinRaffle() {
   return (
-    <WalletKitProvider>
-      <Layout>
-        {/* <Seo templateTitle='Home' /> */}
-        <Seo />
-        <main>
-          <Navbar></Navbar>
-          <section>
-            <CreateCoinRaffle></CreateCoinRaffle>
-            <PreviousCoinRaffles></PreviousCoinRaffles>
-          </section>
-        </main>
-      </Layout>
-    </WalletKitProvider>
+    <Layout>
+      {/* <Seo templateTitle='Home' /> */}
+      <Seo />
+      <main>
+        <Navbar></Navbar>
+        <section>
+          <CreateCoinRaffle></CreateCoinRaffle>
+          <PreviousCoinRaffles></PreviousCoinRaffles>
+        </section>
+      </main>
+    </Layout>
   );
 }

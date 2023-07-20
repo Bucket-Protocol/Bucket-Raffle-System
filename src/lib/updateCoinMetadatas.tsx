@@ -1,9 +1,13 @@
 import getSuiProvider from './getSuiProvider';
 import { CoinMetadatas } from './config';
 import { sleep } from '../lib/sleep.jsx';
+import { WalletAccount } from '@mysten/wallet-standard';
 
-export async function updateCoinMetadatas(coinTypes: never[], walletKit: any) {
-  let network = walletKit.currentAccount.chains[0].split('sui:')[1];
+export async function updateCoinMetadatas(
+  coinTypes: string[],
+  currentAccount: WalletAccount
+) {
+  let network = currentAccount.chains[0].split('sui:')[1];
   let provider = getSuiProvider(network);
   let coinTypeSet = Array.from(new Set(coinTypes));
   for (let coinType of coinTypeSet) {

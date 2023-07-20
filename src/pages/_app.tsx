@@ -1,8 +1,13 @@
 import { AppProps } from 'next/app';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+// Create a client
+const queryClient = new QueryClient();
 
 import '@/styles/globals.css';
 // !STARTERCONF This is for demo purposes, remove @/styles/colors.css import immediately
 import '@/styles/colors.css';
+import { WalletKitProvider } from '@mysten/wallet-kit';
 
 /**
  * !STARTERCONF info
@@ -10,7 +15,13 @@ import '@/styles/colors.css';
  */
 
 function MyApp({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  return (
+    <QueryClientProvider client={queryClient}>
+      <WalletKitProvider>
+        <Component {...pageProps} />
+      </WalletKitProvider>
+    </QueryClientProvider>
+  );
 }
 
 export default MyApp;

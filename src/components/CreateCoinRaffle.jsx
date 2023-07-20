@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
 import { moveCallCreateCoinRaffle } from '../lib/moveCallCreateCoinRaffle';
@@ -8,17 +8,25 @@ import { CoinMetadatas } from '../lib/config';
 import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
 import RingAnimation from './RingAnimation';
 import { sleep } from '../lib/sleep.jsx';
+import useCoins from '../lib/hooks/useCoins';
+import useGetTx from '../lib/hooks/useGetTx';
 
 export default function CreateCoinRaffle() {
-  let walletKit = useWalletKit();
-
+  const walletKit = useWalletKit();
+  const { currentAccount } = walletKit;
+  const { coins, refetchCoins, loadingCoins } = useCoins();
+  const { getRaffleObjId } = useGetTx();
+  console.log('coins:', coins);
+  const [raffleName, setRaffleName] = useState('My Raffle');
+  const [prizeBalance, setPrizeBalance] = useState(0);
+  const [winnerCount, setWinnerCount] = useState(1);
+  const [addresses, setAddresses] = useState(
+    '0x3d1037246147d652b463ff8815acaf034091d21bf2cfa996fab41d36c96ba099\n0x04d626ce8938318165fab01491095329aee67fd017a4a17fe2c981b8a9a569cc\n0x388a0e160cb67dbac3a182f1fadd31612a78fc271916db4b2f7d99d2c9ca2c72'
+  );
   const [startRaffleDigest, setStartRaffleDigest] = useState('');
   const [currentRaffleObjId, setCurrentRaffleObjId] = useState('');
   const [currentRaffleFields, setCurrentRaffleFields] = useState({});
   const [txRunning, setTxRunning] = useState(false);
-  const [userCoinsList, setUserCoinsList] = useState([]);
-  const [gettedUserCoinsList, setGettedUserCoinsList] = useState(false);
-  const [coinMetadataReady, setCoinMetadataReady] = useState(false);
   const [currentCoinInfo, setCurrentCoinInfo] = useState({
     iconUrl: null,
     coinType: '0x2::sui::SUI',
@@ -26,77 +34,49 @@ export default function CreateCoinRaffle() {
     symbol: 'SUI',
   });
 
-  // TODO: ray:
-  if (!gettedUserCoinsList && walletKit && walletKit.currentAccount) {
-    let run = async () => {
-      setGettedUserCoinsList(true);
-      window.walletKit = walletKit;
-
-      let network = walletKit.currentAccount.chains[0].split('sui:')[1];
-      let provider = getSuiProvider(network);
-      let userCoins = [];
-      let nextCursor = '';
-      let res;
-      do {
-        res = await provider.getAllCoins({
-          owner: walletKit.currentAccount.address,
-          nextCursor,
-        });
-        userCoins = userCoins.concat(res.data);
-        nextCursor = res.nextCursor;
-      } while (res.hasNextPage);
-      let coinSum = {};
-      userCoins.forEach((coin) => {
-        if (coinSum[coin.coinType]) {
-          coinSum[coin.coinType].balance += Number(coin.balance);
-        } else {
-          coinSum[coin.coinType] = {
-            type: coin.coinType,
-            balance: Number(coin.balance),
-          };
-        }
-      });
-      setUserCoinsList(Array.from(Object.values(coinSum)));
-      await updateCoinMetadatas(Array.from(Object.keys(coinSum)), walletKit);
-      setCoinMetadataReady(true);
-
-      // todo: may have next cursor
+  useEffect(() => {
+    if (currentAccount && startRaffleDigest) {
+      const raffleObjId = getRaffleObjId(startRaffleDigest);
+      setCurrentRaffleObjId(raffleObjId);
+    }
+    return () => {
+      setStartRaffleDigest('');
     };
-    run();
-  }
+  }, [walletKit, startRaffleDigest]);
 
   // TODO: ray: 需要 getRaffleFields 只發生一次就夠了，但要等 walletKit Ready，且 currentRaffleObjId 有值，且 currentRaffleFields 為空
-  const [gettingRaffleFieldsById, setGettingRaffleFieldsById] = useState(false);
-  if (
-    currentRaffleObjId &&
-    !gettingRaffleFieldsById &&
-    !currentRaffleFields.id &&
-    walletKit &&
-    walletKit.currentAccount
-  ) {
-    let run = async () => {
-      setGettingRaffleFieldsById(true);
-      console.log('run:');
-      let raffleFields = await getRaffleFields({
-        walletKit,
-        raffleObjId: currentRaffleObjId,
-      });
-      setCurrentRaffleFields(raffleFields);
-      console.log('raffleFields:', raffleFields);
-      setRaffleName(raffleFields.name);
-      setWinnerCount(raffleFields.winner_count);
-      await updateCoinMetadatas([raffleFields.coin_type], walletKit);
-      setPrizeBalance(
-        raffleFields.balance /
-          10 ** CoinMetadatas[raffleFields.coin_type].decimals
-      ); //
-      setAddresses(
-        raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
-      );
-      setGettingRaffleFieldsById(false);
-    };
-    run();
-  }
+  // const [gettingRaffleFieldsById, setGettingRaffleFieldsById] = useState(false);
+  // if (
+  //   currentRaffleObjId &&
+  //   !gettingRaffleFieldsById &&
+  //   !currentRaffleFields.id &&
+  //   walletKit &&
+  //   walletKit.currentAccount
+  // ) {
+  //   let run = async () => {
+  //     setGettingRaffleFieldsById(true);
+  //     console.log('run:');
+  //     let raffleFields = await getRaffleFields({
+  //       walletKit,
+  //       raffleObjId: currentRaffleObjId,
+  //     });
+  //     setCurrentRaffleFields(raffleFields);
+  //     console.log('raffleFields:', raffleFields);
+  //     setRaffleName(raffleFields.name);
+  //     setWinnerCount(raffleFields.winner_count);
+  //     await updateCoinMetadatas([raffleFields.coin_type], walletKit);
+  //     setPrizeBalance(
+  //       raffleFields.balance /
+  //         10 ** CoinMetadatas[raffleFields.coin_type].decimals
+  //     ); //
+  //     setAddresses(
+  //       raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
+  //     );
+  //     setGettingRaffleFieldsById(false);
+  //   };
+  //   run();
+  // }
+
   // TODO: ray: 需要 getTransactionBlock 只發生一次就夠了，但要等 walletKit Ready 且 startRaffleDigest 有值且 currentRaffleObjId 為空
   const [gettingRaffleIdByDigest, setGettingRaffleIdByDigest] = useState(false);
   if (
@@ -133,31 +113,21 @@ export default function CreateCoinRaffle() {
     };
     run();
   }
-  // raffle name Handeler
-  let raffleNameDefault = '';
-  const [raffleName, setRaffleName] = useState(raffleNameDefault);
+
   const handleRaffleNameChange = (event) => {
     setRaffleName(event.target.value);
   };
-  // prizeBlance Handeler
-  let prizeBalanceDefault = 0;
-  const [prizeBalance, setPrizeBalance] = useState(prizeBalanceDefault);
   const handlePrizeBalanceChange = (event) => {
     setPrizeBalance(event.target.value);
   };
-  // winnerCount Handeler
-  let winnerCountDefault = 1;
-  const [winnerCount, setWinnerCount] = useState(winnerCountDefault);
   const handleWinnerCountChange = (event) => {
     setWinnerCount(event.target.value);
   };
-  // addresses Handeler
-  const [addresses, setAddresses] = useState(
-    '0x3d1037246147d652b463ff8815acaf034091d21bf2cfa996fab41d36c96ba099\n0x04d626ce8938318165fab01491095329aee67fd017a4a17fe2c981b8a9a569cc\n0x388a0e160cb67dbac3a182f1fadd31612a78fc271916db4b2f7d99d2c9ca2c72'
-  );
+
   const handleAddressesChange = (event) => {
     setAddresses(event.target.value);
   };
+
   const handleSettleRaffle = async (event) => {
     setTxRunning(true);
     let result = await moveCallSettleCoinRaffle({
@@ -173,9 +143,10 @@ export default function CreateCoinRaffle() {
       );
     }
   };
+
   const handleStartRaffle = async (event) => {
-    let _winnerCount = Number(winnerCount) || 1;
-    let _prizeBalance = prizeBalance || prizeBalanceDefault;
+    let _winnerCount = winnerCount;
+    let _prizeBalance = prizeBalance;
     let _addresses = addresses.split('\n');
     let coin_type = currentCoinInfo.coinType;
     setTxRunning(true);
@@ -197,10 +168,6 @@ export default function CreateCoinRaffle() {
       coin_type,
     });
     console.log('resData:', resData);
-
-    let network = walletKit.currentAccount.chains[0].split('sui:')[1];
-    let provider = getSuiProvider(network);
-
     setStartRaffleDigest(resData.digest);
   };
 
@@ -286,49 +253,51 @@ export default function CreateCoinRaffle() {
                   className='py-2 text-sm text-gray-700 dark:text-gray-200'
                   aria-labelledby='coinSelectDropdownButton'
                 >
-                  {userCoinsList.map((coin, index) => {
-                    if (coinMetadataReady && CoinMetadatas[coin.type]) {
-                      let icon = () => {
-                        if (CoinMetadatas[coin.type].iconUrl) {
-                          return (
-                            <img
-                              className='inline-block h-6 w-6 mx-1'
-                              src={CoinMetadatas[coin.type].iconUrl}
-                            />
-                          );
-                        } else {
-                          return <></>;
-                        }
-                      };
-                      let handleOnClick = () => {
-                        setCurrentCoinInfo({
-                          coinType: coin.type,
-                          ...CoinMetadatas[coin.type],
-                        });
-                        let a = document
-                          .getElementById('coinSelectDropdownButton')
-                          .click();
-                      };
-                      return (
-                        <li key={index}>
-                          <button
-                            className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
-                            onClick={handleOnClick}
-                          >
-                            {icon()}
-                            {(
-                              coin.balance /
-                              10 ** CoinMetadatas[coin.type].decimals
-                            ).toFixed(2)}{' '}
-                            {CoinMetadatas[coin.type].name ||
-                              CoinMetadatas[coin.type].symbol}{' '}
-                          </button>
-                        </li>
-                      );
-                    } else {
-                      return <></>;
-                    }
-                  })}
+                  {coins &&
+                    coins.map((coin, index) => {
+                      if (CoinMetadatas[coin.type]) {
+                        let icon = () => {
+                          if (CoinMetadatas[coin.type].iconUrl) {
+                            return (
+                              <img
+                                key={index}
+                                className='inline-block h-6 w-6 mx-1'
+                                src={CoinMetadatas[coin.type].iconUrl}
+                              />
+                            );
+                          } else {
+                            return <></>;
+                          }
+                        };
+                        let handleOnClick = () => {
+                          setCurrentCoinInfo({
+                            coinType: coin.type,
+                            ...CoinMetadatas[coin.type],
+                          });
+                          let a = document
+                            .getElementById('coinSelectDropdownButton')
+                            .click();
+                        };
+                        return (
+                          <li key={index}>
+                            <button
+                              className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'
+                              onClick={handleOnClick}
+                            >
+                              {icon()}
+                              {(
+                                coin.balance /
+                                10 ** CoinMetadatas[coin.type].decimals
+                              ).toFixed(2)}{' '}
+                              {CoinMetadatas[coin.type].name ||
+                                CoinMetadatas[coin.type].symbol}{' '}
+                            </button>
+                          </li>
+                        );
+                      } else {
+                        return <div key={index}></div>;
+                      }
+                    })}
                   <li>
                     <button className='block w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white'>
                       Type A

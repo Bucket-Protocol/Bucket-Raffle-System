@@ -26,7 +26,7 @@ export let moveCallCreateCoinRaffle = async ({
         tx.pure(prizeBalance * 10 ** 9, 'u64'),
       ]);
     } else {
-      await updateCoinMetadatas([coin_type], walletKit);
+      // await updateCoinMetadatas([coin_type], walletKit);
 
       let userCoins = [];
       let nextCursor = '';

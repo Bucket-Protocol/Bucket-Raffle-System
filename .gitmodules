@@ -1,0 +1,3 @@
+[submodule "Raffle-move"]
+	path = Raffle-move
+	url = https://github.com/Bucket-Protocol/Raffle-move.git

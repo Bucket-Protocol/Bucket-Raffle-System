@@ -6,10 +6,12 @@ import Seo from '@/components/Seo';
 
 import Navbar from '../components/Navbar';
 
-import { PreviousCoinRaffles } from '../components/PreviousCoinRaffles';
 import Script from 'next/script';
 import 'flowbite';
 import CreateCoinRaffle from '../components/CreateCoinRaffle';
+
+import { AllPreviousRaffles } from '../components/AllPreviousRaffles';
+
 /**
  * SVGR Support
  * Caveat: No React Props Type.
@@ -32,7 +34,7 @@ export default function HomePage() {
           <Navbar></Navbar>
           <section>
             <CreateCoinRaffle></CreateCoinRaffle>
-            <PreviousCoinRaffles></PreviousCoinRaffles>
+            <AllPreviousRaffles></AllPreviousRaffles>
           </section>
         </main>
       </Layout>

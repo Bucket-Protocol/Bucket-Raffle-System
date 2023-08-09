@@ -8,7 +8,7 @@ import Navbar from '../components/Navbar';
 
 import CreateCoinRaffle from '../components/CreateCoinRaffle';
 
-import { PreviousCoinRaffles } from '../components/PreviousCoinRaffles';
+import { PreviousRaffles } from '../components/PreviousRaffles';
 import Script from 'next/script';
 import 'flowbite';
 import Link from 'next/link';
@@ -34,7 +34,7 @@ export default function HomePage() {
           <Navbar></Navbar>
           <section>
             <CreateCoinRaffle></CreateCoinRaffle>
-            <PreviousCoinRaffles></PreviousCoinRaffles>
+            <PreviousRaffles></PreviousRaffles>
           </section>
           {/* <section>
             <div className='mt-3 width-full text-center'>

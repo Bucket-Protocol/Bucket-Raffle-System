@@ -6,7 +6,7 @@ import Seo from '@/components/Seo';
 
 import Navbar from '../components/Navbar';
 
-import { PreviousRaffles } from '../components/PreviousRaffles';
+import { AllPreviousRaffles } from '../components/AllPreviousRaffles';
 import Script from 'next/script';
 import 'flowbite';
 import CreateNFTRaffle from '../components/CreateNFTRaffle';
@@ -32,7 +32,7 @@ export default function HomePage() {
           <Navbar></Navbar>
           <section>
             <CreateNFTRaffle></CreateNFTRaffle>
-            <PreviousRaffles></PreviousRaffles>
+            <AllPreviousRaffles></AllPreviousRaffles>
           </section>
         </main>
       </Layout>

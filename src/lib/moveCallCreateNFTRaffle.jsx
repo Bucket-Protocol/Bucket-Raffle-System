@@ -1,6 +1,8 @@
 import { TransactionBlock } from '@mysten/sui.js';
 import { getNetwork } from './getNetwork';
-import { RafflePackageId } from './config';
+import { RafflePackageIds } from './config';
+let RafflePackageId = RafflePackageIds[0];
+import { CLOCK_OBJECT } from './constants';
 import getSuiProvider from './getSuiProvider';
 import { CoinMetadatas } from './config';
 import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
@@ -40,7 +42,7 @@ export let moveCallCreateNFTRaffle = async ({
       typeArguments: [NFTs[0].data.type],
       arguments: [
         tx.pure(Array.from(new TextEncoder().encode(raffleName)), 'vector<u8>'),
-        tx.pure(round, 'u64'),
+        tx.object(CLOCK_OBJECT),
         tx.pure(addresses, 'vector<address>'),
         tx.makeMoveVec({ objects: NFTs_input }),
         // tx.pure(), 'u64'),

@@ -2,6 +2,7 @@ import { TransactionBlock } from '@mysten/sui.js';
 import { getNetwork } from './getNetwork';
 import { RafflePackageIds } from './config';
 let RafflePackageId = RafflePackageIds[0];
+import { CLOCK_OBJECT } from './constants';
 import getSuiProvider from '../lib/getSuiProvider';
 import { CoinMetadatas } from '../lib/config';
 import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
@@ -75,7 +76,7 @@ export let moveCallCreateCoinRaffle = async ({
       typeArguments: [coin_type],
       arguments: [
         tx.pure(Array.from(new TextEncoder().encode(raffleName)), 'vector<u8>'),
-        tx.pure(round, 'u64'),
+        tx.object(CLOCK_OBJECT),
         tx.pure(addresses, 'vector<address>'),
         tx.pure(parseInt(winnerCount), 'u64'),
         coinInput,

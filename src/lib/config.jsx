@@ -15,7 +15,19 @@ RafflePackageIdV2['testnet'] =
 RafflePackageIdV2['mainnet'] =
   '0xa8ff9a23c6cfb36fb141585a5843be000e40a5424a868ce04aa42d5a25a11a70';
 
-export let RafflePackageIds = [RafflePackageIdV2, RafflePackageId];
+// V3
+export let RafflePackageIdV3 = Object();
+RafflePackageIdV3['testnet'] =
+  '0x5698f5889daf24a5edd0a197b99fe3abf67dec3a609c0b7d8c9e2a76fc5a9fbd';
+
+RafflePackageIdV3['mainnet'] =
+  '0xc2355f7f321618e1c791cdd31fb5fae5b44c450424d1634b9b0cc3d94ae5dc3a';
+
+export let RafflePackageIds = [
+  RafflePackageIdV3,
+  RafflePackageIdV2,
+  RafflePackageId,
+];
 export let CoinMetadatas = Object();
 
 export let DefaultAddresses = `0x04d626ce8938318165fab01491095329aee67fd017a4a17fe2c981b8a9a569cc

@@ -112,9 +112,6 @@ export default function CreateCoinRaffle() {
           let network = walletKit.currentAccount.chains[0].split('sui:')[1];
           let provider = getSuiProvider(network);
           // console.log('walletKit:', walletKit);
-          console.log(
-            'let transactionBlock = await provider.getTransactionBlock({'
-          );
           let transactionBlock = await provider.getTransactionBlock({
             digest: startRaffleDigest,
             options: { showObjectChanges: true },
@@ -164,6 +161,7 @@ export default function CreateCoinRaffle() {
       raffleObjId: currentRaffleObjId,
     });
     setTxRunning(false);
+    window.dispatchEvent(new CustomEvent('New Raffle Settled', {}));
     if (result) {
       let updateRaffleFields = async () => {
         let raffleFields = await getRaffleFields({
@@ -204,6 +202,7 @@ export default function CreateCoinRaffle() {
       coin_type,
     });
     console.log('resData:', resData);
+    window.dispatchEvent(new CustomEvent('New Raffle Created', {}));
 
     let network = walletKit.currentAccount.chains[0].split('sui:')[1];
     let provider = getSuiProvider(network);

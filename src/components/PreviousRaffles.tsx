@@ -34,7 +34,7 @@ export function PreviousRaffles({ index, RafflePackageId }: Props) {
       Object.keys(listedNftObjs).length == 0 &&
       listedNftIds.length
     ) {
-      (async () => {
+      let run = async () => {
         let network = getNetwork(walletKit);
         let provider = getSuiProvider(network);
         let NftObjs = Object();
@@ -50,7 +50,8 @@ export function PreviousRaffles({ index, RafflePackageId }: Props) {
         }
 
         setListedNftObjs(NftObjs);
-      })();
+      };
+      run();
     }
   }, [listedNftIds, walletKit, listedNftObjs]);
 
@@ -138,6 +139,23 @@ export function PreviousRaffles({ index, RafflePackageId }: Props) {
         setCoinMetadatasReady(true);
       };
       run();
+      if (index == 0) {
+        // TODO: Ray: When New raffle created or Settled, update it.
+        // window.addEventListener('New Raffle Created', (event) => {
+        //   console.log(
+        //     event,
+        //     "window.addEventListener('New Raffle Created', () => {"
+        //   );
+        //   run();
+        // });
+        // window.addEventListener('New Raffle Settled', (event) => {
+        //   console.log(
+        //     event,
+        //     "window.addEventListener('New Raffle Settled', () => {"
+        //   );
+        //   run();
+        // });
+      }
     }
   }, [walletKit]);
   // if (createRaffleEvents.length) {
@@ -327,6 +345,8 @@ export function PreviousRaffles({ index, RafflePackageId }: Props) {
     );
   } else if (index == 0) {
     return <>Loading...</>;
+  } else {
+    return <></>;
   }
 }
 function parseTimestamp(timestamp: number) {

@@ -41,13 +41,15 @@ export function AllPreviousRaffles() {
               </th>
             </tr>
           </thead>
-          {RafflePackageIds.map((RafflePackageId, i) => (
-            <PreviousRaffles
-              key={i}
-              index={i}
-              RafflePackageId={RafflePackageId[network]}
-            ></PreviousRaffles>
-          ))}
+          {RafflePackageIds.map((RafflePackageId, i) => {
+            return (
+              <PreviousRaffles
+                key={i}
+                index={i}
+                RafflePackageId={RafflePackageId[network]}
+              ></PreviousRaffles>
+            );
+          })}
         </table>
       </div>
     );

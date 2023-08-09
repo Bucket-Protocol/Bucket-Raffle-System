@@ -94,9 +94,6 @@ export default function CreateCoinRaffle() {
           let network = walletKit.currentAccount.chains[0].split('sui:')[1];
           let provider = getSuiProvider(network);
           // console.log('walletKit:', walletKit);
-          console.log(
-            'let transactionBlock = await provider.getTransactionBlock({'
-          );
           let transactionBlock = await provider.getTransactionBlock({
             digest: startRaffleDigest,
             options: { showObjectChanges: true },

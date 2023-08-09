@@ -1,6 +1,7 @@
 import { TransactionBlock } from '@mysten/sui.js';
 import { getNetwork } from './getNetwork';
-import { RafflePackageId } from './config';
+import { RafflePackageIds } from './config';
+let RafflePackageId = RafflePackageIds[0];
 import getSuiProvider from '../lib/getSuiProvider';
 import { CoinMetadatas } from '../lib/config';
 import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';

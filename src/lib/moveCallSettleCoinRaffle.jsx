@@ -1,6 +1,7 @@
 import { TransactionBlock } from '@mysten/sui.js';
 import { getNetwork } from './getNetwork';
-import { RafflePackageId } from './config';
+import { RafflePackageIds } from './config';
+let RafflePackageId = RafflePackageIds[0];
 import { hexToUint8Array } from './hexToUint8Array';
 import { getRaffleFields } from './getRaffleFields';
 import { sleep } from './sleep';

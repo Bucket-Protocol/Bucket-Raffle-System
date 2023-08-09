@@ -24,32 +24,8 @@ import Link from 'next/link';
 // Before you begin editing, follow all comments with `STARTERCONF`,
 // to customize the default configuration.
 
-export default function HomePage() {
-  return (
-    <WalletKitProvider>
-      <Layout>
-        {/* <Seo templateTitle='Home' /> */}
-        <Seo />
-        <main>
-          <Navbar></Navbar>
-          <section>
-            <CreateCoinRaffle></CreateCoinRaffle>
-            <PreviousRaffles></PreviousRaffles>
-          </section>
-          {/* <section>
-            <div className='mt-3 width-full text-center'>
-              <h1>Welcome to Bucket Raffle System</h1>
-              <hr className='my-4'></hr>
-              <Link
-                href={`/coinRaffle`}
-                className='h2 bg-blue-500 hover:bg-blue-700 rounded-lg px-4 py-1 text-white'
-              >
-                Go To Coin Raffle
-              </Link>
-            </div>
-          </section> */}
-        </main>
-      </Layout>
-    </WalletKitProvider>
-  );
+import CoinRafflePage from './coinRaffle';
+
+export default function index() {
+  return <CoinRafflePage></CoinRafflePage>;
 }

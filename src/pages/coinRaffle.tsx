@@ -24,7 +24,7 @@ import { AllPreviousRaffles } from '../components/AllPreviousRaffles';
 // Before you begin editing, follow all comments with `STARTERCONF`,
 // to customize the default configuration.
 
-export default function HomePage() {
+export default function CoinRafflePage() {
   return (
     <WalletKitProvider>
       <Layout>

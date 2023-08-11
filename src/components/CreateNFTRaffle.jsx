@@ -131,10 +131,16 @@ export default function CreateCoinRaffle() {
   // TODO:
   const handleSettleRaffle = async (event) => {
     setTxRunning(true);
-    let result = await moveCallSettleNFTRaffle({
-      walletKit,
-      raffleObjId: currentRaffleObjId,
-    });
+    let result;
+    try {
+      result = await moveCallSettleNFTRaffle({
+        walletKit,
+        raffleObjId: currentRaffleObjId,
+      });
+    } catch (e) {
+      setTxRunning(false);
+      return;
+    }
     setTxRunning(false);
     if (result) {
       let updateRaffleFields = async () => {
@@ -175,13 +181,20 @@ export default function CreateCoinRaffle() {
       raffleName,
       NFTs: prizeNFTs,
     });
-
-    let resData = await moveCallCreateNFTRaffle({
-      walletKit,
-      addresses: _addresses,
-      raffleName,
-      NFTs: prizeNFTs,
-    });
+    let resData;
+    try {
+      resData = await moveCallCreateNFTRaffle({
+        walletKit,
+        addresses: _addresses,
+        raffleName,
+        NFTs: prizeNFTs,
+      });
+    } catch (e) {
+      // print the error detail
+      console.log('ERROR at moveCallCreateCoinRaffle:', e);
+      setTxRunning(false);
+      return;
+    }
     console.log('resData:', resData);
 
     setStartRaffleDigest(resData.digest);

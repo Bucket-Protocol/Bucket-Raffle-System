@@ -156,10 +156,16 @@ export default function CreateCoinRaffle() {
   };
   const handleSettleRaffle = async (event) => {
     setTxRunning(true);
-    let result = await moveCallSettleCoinRaffle({
-      walletKit,
-      raffleObjId: currentRaffleObjId,
-    });
+    let result;
+    try {
+      result = await moveCallSettleCoinRaffle({
+        walletKit,
+        raffleObjId: currentRaffleObjId,
+      });
+    } catch (e) {
+      setTxRunning(false);
+      return;
+    }
     setTxRunning(false);
     window.dispatchEvent(new CustomEvent('New Raffle Settled', {}));
     if (result) {
@@ -192,15 +198,22 @@ export default function CreateCoinRaffle() {
       prizeBalance,
       coin_type,
     });
-
-    let resData = await moveCallCreateCoinRaffle({
-      walletKit,
-      addresses: _addresses,
-      raffleName,
-      winnerCount: _winnerCount,
-      prizeBalance,
-      coin_type,
-    });
+    let resData;
+    try {
+      resData = await moveCallCreateCoinRaffle({
+        walletKit,
+        addresses: _addresses,
+        raffleName,
+        winnerCount: _winnerCount,
+        prizeBalance,
+        coin_type,
+      });
+    } catch (e) {
+      // print the error detail
+      console.log('ERROR at moveCallCreateCoinRaffle:', e);
+      setTxRunning(false);
+      return;
+    }
     console.log('resData:', resData);
     window.dispatchEvent(new CustomEvent('New Raffle Created', {}));
 

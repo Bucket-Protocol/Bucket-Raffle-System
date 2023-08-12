@@ -218,7 +218,8 @@ export function PreviousRaffles({ index, RafflePackageId }: Props) {
                         return (
                           <a
                             key={index}
-                            href={`https://suiexplorer.com/object/${id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
+                            // href={`https://suiexplorer.com/object/${id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
+                            href={`https://suiexplorer.com/object/${id}?network=${network}`}
                             target='_blank'
                           >
                             <img
@@ -259,7 +260,8 @@ export function PreviousRaffles({ index, RafflePackageId }: Props) {
           let handleViewRaffle = () => {
             let network = walletKit.currentAccount.chains[0].split('sui:')[1];
             window.open(
-              `https://suiexplorer.com/object/${raffle.id.id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`,
+              `https://suiexplorer.com/object/${raffle.id.id}?network=${network}`,
+              // `https://suiexplorer.com/object/${raffle.id.id}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`,
               '_blank'
             );
           };

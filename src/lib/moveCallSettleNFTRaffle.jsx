@@ -5,6 +5,7 @@ import { RafflePackageIds } from './config';
 let RafflePackageId = RafflePackageIds[0];
 import { hexToUint8Array } from './hexToUint8Array';
 import { getRaffleFields } from './getRaffleFields';
+import { CLOCK_OBJECT } from './constants';
 import { sleep } from './sleep';
 export let moveCallSettleNFTRaffle = async ({ walletKit, raffleObjId }) => {
   let raffleFields = await getRaffleFields({ walletKit, raffleObjId });
@@ -31,6 +32,7 @@ export let moveCallSettleNFTRaffle = async ({ walletKit, raffleObjId }) => {
       typeArguments: [raffleFields.coin_type],
       arguments: [
         tx.object(raffleObjId),
+        tx.object(CLOCK_OBJECT),
         tx.pure(hexToUint8Array(drand.signature), 'vector<u8>'),
         tx.pure(hexToUint8Array(drand.previous_signature), 'vector<u8>'),
       ],

@@ -16,10 +16,10 @@ export let moveCallCreateNFTRaffle = async ({
     let network = getNetwork(walletKit);
     let provider = getSuiProvider(network);
 
-    let drand = await fetch(
-      `https://drand.cloudflare.com/8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce/public/latest`
-    ).then((response) => response.json());
-    let round = drand.round + 2;
+    // let drand = await fetch(
+    //   `https://drand.cloudflare.com/8990e7a9aaed2ffed73dbd7092123d6f289930540d7651336225dc172e51b2ce/public/latest`
+    // ).then((response) => response.json());
+    // let round = drand.round + 2;
     // let round = drand.round;
     const tx = new TransactionBlock();
     console.log('NFTs:', NFTs);
@@ -31,7 +31,6 @@ export let moveCallCreateNFTRaffle = async ({
       })
     );
 
-    let NFT_type = NFTs[0].data.type;
     if (addresses.length < NFTs.length) {
       alert("You don't have enough participants for the number of Prize NFTs.");
       return '';

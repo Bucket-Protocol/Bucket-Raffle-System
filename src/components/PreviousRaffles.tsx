@@ -302,7 +302,7 @@ export function PreviousRaffles({ index, RafflePackageId }: Props) {
             let network = getNetwork(walletKit);
             return (
               <a
-                href={`https://suiexplorer.com/address/${raffle.creator}?network=https%3A%2F%2Fsui-${network}-endpoint.blockvision.org`}
+                href={`https://suiexplorer.com/address/${raffle.creator}?network=${network}`}
                 target='_blank'
                 className='text-blue-500 hover:text-blue-800'
               >

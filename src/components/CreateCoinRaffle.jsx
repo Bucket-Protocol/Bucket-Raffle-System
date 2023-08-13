@@ -3,12 +3,14 @@ import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
 import { moveCallCreateCoinRaffle } from '../lib/moveCallCreateCoinRaffle';
 import { moveCallSettleCoinRaffle } from '../lib/moveCallSettleCoinRaffle';
+import { moveCallCreateCoinRaffleByAddressesObj } from '../lib/moveCallCreateCoinRaffleByAddressesObj';
 import { getRaffleFields } from '../lib/getRaffleFields';
 import { CoinMetadatas, DefaultAddresses } from '../lib/config';
 import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
 import RingAnimation from './RingAnimation';
 import { sleep } from '../lib/sleep.jsx';
 import { getNetwork, getNetworkIgnoreError } from '../lib/getNetwork';
+import axios from 'axios';
 
 export default function CreateCoinRaffle() {
   let walletKit = useWalletKit();
@@ -118,7 +120,9 @@ export default function CreateCoinRaffle() {
           });
           setTxRunning(false);
           let raffleObjId = transactionBlock.objectChanges.filter((obj) => {
-            return obj.type == 'created';
+            return (
+              obj.type == 'created' && obj.objectType.includes('::raffle::')
+            );
           })[0].objectId;
           setCurrentRaffleObjId(raffleObjId);
         } catch (e) {
@@ -188,26 +192,56 @@ export default function CreateCoinRaffle() {
     let _winnerCount = Number(winnerCount) || 1;
     let _prizeBalance = prizeBalance || prizeBalanceDefault;
     let _addresses = addresses.split('\n');
-    let coin_type = currentCoinInfo.coinType;
     setTxRunning(true);
-    console.log({
-      walletKit,
-      addresses: _addresses,
-      raffleName,
-      winnerCount: _winnerCount,
-      prizeBalance,
-      coin_type,
-    });
+
+    let coin_type = currentCoinInfo.coinType;
+
     let resData;
     try {
-      resData = await moveCallCreateCoinRaffle({
-        walletKit,
-        addresses: _addresses,
-        raffleName,
-        winnerCount: _winnerCount,
-        prizeBalance,
-        coin_type,
-      });
+      if (_addresses.length > 400) {
+        console.log('Will Use AddressObj');
+
+        const userAddress = walletKit.currentAccount.address;
+        const data = JSON.stringify({
+          addresses: _addresses,
+          network: 'testnet',
+          user_address: userAddress,
+        });
+
+        const headers = { 'Content-type': 'application/json' };
+        let response = await axios.post(
+          'https://injoy4.intag.io/addressesobj/new',
+          data,
+          { headers }
+        );
+        let addressObjId = response.data.addressObjId;
+        while (addressObjId) {
+          let res = await axios.get(
+            `https://injoy4.intag.io/addressesobj/${addressObjId}`
+          );
+          console.log('res:', res);
+          if (res.data.isReady) break;
+          await sleep(1000);
+        }
+
+        resData = await moveCallCreateCoinRaffleByAddressesObj({
+          walletKit,
+          addressesObjId: response.data.addressObjId,
+          raffleName,
+          winnerCount: _winnerCount,
+          prizeBalance,
+          coin_type,
+        });
+      } else {
+        resData = await moveCallCreateCoinRaffle({
+          walletKit,
+          addresses: _addresses,
+          raffleName,
+          winnerCount: _winnerCount,
+          prizeBalance,
+          coin_type,
+        });
+      }
     } catch (e) {
       // print the error detail
       console.log('ERROR at moveCallCreateCoinRaffle:', e);

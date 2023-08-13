@@ -3,6 +3,7 @@ import { useWalletKit } from '@mysten/wallet-kit';
 import getSuiProvider from '../lib/getSuiProvider';
 import { moveCallCreateNFTRaffle } from '../lib/moveCallCreateNFTRaffle';
 import { moveCallSettleNFTRaffle } from '../lib/moveCallSettleNFTRaffle';
+import { moveCallCreateNFTRaffleByAddressesObj } from '../lib/moveCallCreateNFTRaffleByAddressesObj';
 import { CoinMetadatas, DefaultAddresses } from '../lib/config';
 import { getRaffleFields } from '../lib/getRaffleFields';
 
@@ -11,6 +12,7 @@ import { sleep } from '../lib/sleep.jsx';
 import { getNetwork, getNetworkIgnoreError } from '../lib/getNetwork';
 import { renderNftSelectorModel } from './renderNftSelectorModel';
 import { formatImageUrl } from '../lib/formatImageUrl';
+import axios from 'axios';
 export default function CreateCoinRaffle() {
   let walletKit = useWalletKit();
 
@@ -99,7 +101,6 @@ export default function CreateCoinRaffle() {
             options: { showObjectChanges: true },
           });
           setTxRunning(false);
-          console.log('transactionBlock:', transactionBlock);
           let raffleObjId = transactionBlock.objectChanges.filter((obj) => {
             return (
               obj.type == 'created' &&
@@ -164,6 +165,11 @@ export default function CreateCoinRaffle() {
       alert('Please enter at least one NFT ObjectID');
       return;
     }
+
+    if (_addresses.length < prizeNFTs.length) {
+      alert("You don't have enough participants for the number of Prize NFTs.");
+      return '';
+    }
     console.log('prizeNFTs:', prizeNFTs);
 
     let NFT_types = Array.from(new Set(prizeNFTs.map((x) => x.data.type)));
@@ -174,6 +180,7 @@ export default function CreateCoinRaffle() {
     if (addresses.split('\n').length < 1) {
       ('');
     }
+
     setTxRunning(true);
     console.log({
       walletKit,
@@ -183,12 +190,46 @@ export default function CreateCoinRaffle() {
     });
     let resData;
     try {
-      resData = await moveCallCreateNFTRaffle({
-        walletKit,
-        addresses: _addresses,
-        raffleName,
-        NFTs: prizeNFTs,
-      });
+      if (_addresses.length > 400) {
+        console.log('Will Use AddressObj');
+
+        const userAddress = walletKit.currentAccount.address;
+        const data = JSON.stringify({
+          addresses: _addresses,
+          network: 'testnet',
+          user_address: userAddress,
+        });
+
+        const headers = { 'Content-type': 'application/json' };
+        let response = await axios.post(
+          'https://injoy4.intag.io/addressesobj/new',
+          data,
+          { headers }
+        );
+        let addressObjId = response.data.addressObjId;
+        while (addressObjId) {
+          let res = await axios.get(
+            `https://injoy4.intag.io/addressesobj/${addressObjId}`
+          );
+          console.log('res:', res);
+          if (res.data.isReady) break;
+          await sleep(1000);
+        }
+
+        resData = await moveCallCreateNFTRaffleByAddressesObj({
+          walletKit,
+          addressesObjId: response.data.addressObjId,
+          raffleName,
+          NFTs: prizeNFTs,
+        });
+      } else {
+        resData = await moveCallCreateNFTRaffle({
+          walletKit,
+          addresses: _addresses,
+          raffleName,
+          NFTs: prizeNFTs,
+        });
+      }
     } catch (e) {
       // print the error detail
       console.log('ERROR at moveCallCreateCoinRaffle:', e);

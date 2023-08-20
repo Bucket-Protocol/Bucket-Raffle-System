@@ -332,11 +332,15 @@ export function PreviousRaffles({ index, RafflePackageId }: Props) {
                 {prizeField()}
               </td>
               <td className='py-4 px-6 border-b border-gray-200'>
-                {raffle.participants.length + raffle.winners.length}
+                {raffle.participantCount ||
+                  raffle.participants.length + raffle.winners.length}
               </td>
               <td className='py-4 px-6 border-b border-gray-200'>{`${
                 raffle.winnerCount
-              }/${raffle.participants.length + raffle.winners.length}`}</td>
+              }/${
+                raffle.participantCount ||
+                raffle.participants.length + raffle.winners.length
+              }`}</td>
               <td className='py-4 px-6 border-b border-gray-200'>
                 {raffleActions()}
               </td>

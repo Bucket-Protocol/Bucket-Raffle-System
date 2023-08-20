@@ -26,10 +26,16 @@ RafflePackageIdV3['mainnet'] =
 export let RafflePackageIds = [
   {
     testnet:
-      '0x1a6e13b572144b9cebfd0874e0b1f9595a5052b5adf3ef0ce25b3fe2d1e67946',
+      '0x201e0d9ae99aa1d93d20e5f00b52276f0b0e58713d4ec421b13c99c44dd3364d',
     mainnet:
-      '0x68e4581fce730187b58dfcb443ca8fddb2f1d71c6f53f5dfa882769e384a0999',
-  }, // V4
+      '0x1f13fe0b2585e181dd13f2c5119fa5d4d86939e6cbfc9663c10fd3354be701c1',
+  }, // V5
+  // {
+  //   testnet:
+  //     '0x50da84b056da95ffd9a2d7f25cd87f8c2326f318e48cea82b33dce75ed88138c',
+  //   mainnet:
+  //     '0x68e4581fce730187b58dfcb443ca8fddb2f1d71c6f53f5dfa882769e384a0999',
+  // }, // V4
   RafflePackageIdV3,
   RafflePackageIdV2,
   RafflePackageId,

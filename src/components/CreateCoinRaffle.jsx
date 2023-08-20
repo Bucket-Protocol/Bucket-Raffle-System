@@ -94,9 +94,6 @@ export default function CreateCoinRaffle() {
           raffleFields.balance /
             10 ** CoinMetadatas[raffleFields.coin_type].decimals
         ); //
-        setAddresses(
-          raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
-        );
       }
     };
     run();
@@ -121,7 +118,8 @@ export default function CreateCoinRaffle() {
           setTxRunning(false);
           let raffleObjId = transactionBlock.objectChanges.filter((obj) => {
             return (
-              obj.type == 'created' && obj.objectType.includes('::raffle::')
+              obj.type == 'created' &&
+              obj.objectType.includes('::raffle::Raffle')
             );
           })[0].objectId;
           setCurrentRaffleObjId(raffleObjId);
@@ -214,19 +212,22 @@ export default function CreateCoinRaffle() {
           data,
           { headers }
         );
-        let addressObjId = response.data.addressObjId;
-        while (addressObjId) {
-          let res = await axios.get(
-            `https://injoy4.intag.io/addressesobj/${addressObjId}`
+        let addressObj_DataId = response.data.id;
+        let res;
+        while (addressObj_DataId) {
+          res = await axios.get(
+            `https://injoy4.intag.io/addressesobj/${addressObj_DataId}`
           );
-          console.log('res:', res);
-          if (res.data.isReady) break;
+          if (res.data.ready) break;
           await sleep(1000);
         }
+        let addressesObjInput = res.data.share_object_ref;
+        let total_fee = res.data.total_fee;
 
         resData = await moveCallCreateCoinRaffleByAddressesObj({
           walletKit,
-          addressesObjId: response.data.addressObjId,
+          addressesObjInput,
+          total_fee,
           raffleName,
           winnerCount: _winnerCount,
           prizeBalance,

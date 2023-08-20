@@ -76,9 +76,9 @@ export default function CreateCoinRaffle() {
         setCurrentRaffleFields(raffleFields);
         console.log('raffleFields:', raffleFields);
         setRaffleName(raffleFields.name);
-        setAddresses(
-          raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
-        );
+        // setAddresses(
+        //   raffleFields.participants.join('\n') + raffleFields.winners.join('\n')
+        // );
       }
     };
     run();
@@ -209,10 +209,10 @@ export default function CreateCoinRaffle() {
         let addressObjId = response.data.addressObjId;
         while (addressObjId) {
           let res = await axios.get(
-            `https://injoy4.intag.io/addressesobj/${addressObjId}`
+            `https://injoy4.intag.io/addressesobj/${addressObjId}/status`
           );
           console.log('res:', res);
-          if (res.data.isReady) break;
+          if (res.data.ready) break;
           await sleep(1000);
         }
 
@@ -269,7 +269,7 @@ export default function CreateCoinRaffle() {
               </p>
               <div
                 className='grid grid-cols-1 md:grid-cols-2 gap-4 mb-2'
-                style={{ '-ms-overflow-style': 'none' }}
+                style={{ msOverflowStyle: 'none' }}
               >
                 {prizeNFTs.map((item, index) => {
                   return (

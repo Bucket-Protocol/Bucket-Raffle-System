@@ -8,7 +8,8 @@ import { CoinMetadatas } from './config';
 import { updateCoinMetadatas } from '@/lib/updateCoinMetadatas';
 export let moveCallCreateCoinRaffleByAddressesObj = async ({
   walletKit,
-  addressesObjId,
+  addressesObjInput,
+  total_fee,
   raffleName,
   winnerCount,
   prizeBalance,
@@ -71,15 +72,8 @@ export let moveCallCreateCoinRaffleByAddressesObj = async ({
         }
       }
     }
-    let addressesObj = await provider.getObject({
-      id: addressesObjId,
-      options: { showContent: true },
-    });
-    console.log('addressesObj:', addressesObj);
     let fee_coin_type = '0x2::sui::SUI';
-    let FeeInput = tx.splitCoins(tx.gas, [
-      tx.pure(addressesObj.data.content.fields.fee, 'u64'),
-    ]);
+    let FeeInput = tx.splitCoins(tx.gas, [tx.pure(total_fee, 'u64')]);
 
     tx.moveCall({
       target: `${RafflePackageId[network]}::raffle::create_coin_raffle_by_addresses_obj`,
@@ -87,7 +81,7 @@ export let moveCallCreateCoinRaffleByAddressesObj = async ({
       arguments: [
         tx.pure(Array.from(new TextEncoder().encode(raffleName)), 'vector<u8>'),
         tx.object(CLOCK_OBJECT),
-        tx.objectRef(addressesObj.data),
+        tx.sharedObjectRef(addressesObjInput),
         FeeInput,
         tx.pure(parseInt(winnerCount), 'u64'),
         coinInput,

@@ -196,7 +196,12 @@ export default function CreateCoinRaffle() {
 
     let resData;
     try {
-      if (_addresses.length > 400) {
+      if (_addresses) {
+        let res = await axios.post('/api/process_merkle', {
+          addresses: _addresses,
+        });
+        console.log('res:', res);
+      } else if (_addresses.length > 400) {
         console.log('Will Use AddressObj');
 
         const userAddress = walletKit.currentAccount.address;

@@ -12,8 +12,7 @@ let getSuiProvider = (network = 'mainnet') => {
     return new JsonRpcProvider(connection);
   } else if (network == 'testnet') {
     let connection = new Connection({
-      fullnode:
-        'https://sui-testnet.blockvision.org/v1/2SnBwJqW1RLEao9yzPo8oB7fKhi',
+      fullnode: 'https://sui-testnet-endpoint.blockvision.org',
     });
     return new JsonRpcProvider(connection);
   } else if (network == 'devnet') {

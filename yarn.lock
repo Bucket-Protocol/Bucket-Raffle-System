@@ -1721,6 +1721,11 @@
   "resolved" "https://registry.npmjs.org/@nicolo-ribaudo/semver-v6/-/semver-v6-6.3.3.tgz"
   "version" "6.3.3"
 
+"@noble/bls12-381@^1.4.0":
+  "integrity" "sha512-mIYqC2jMX7Lcu1QtU/FFftMPDSXNCdlGex6BSf5nPojHjnzzBgs1klFWpB1R8YjqHmOO9xrCzF19f2c42+z3vg=="
+  "resolved" "https://registry.npmjs.org/@noble/bls12-381/-/bls12-381-1.4.0.tgz"
+  "version" "1.4.0"
+
 "@noble/curves@^1.0.0", "@noble/curves@~1.1.0", "@noble/curves@1.1.0":
   "integrity" "sha512-091oBExgENk/kGj3AZmtBDMpxQPDtxQABR2B9lb1JbVTs6ytdzZNwvhxQ4MWasRNEzlbEH8jCWFCwhF/Obj5AA=="
   "resolved" "https://registry.npmjs.org/@noble/curves/-/curves-1.1.0.tgz"

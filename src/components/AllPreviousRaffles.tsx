@@ -56,7 +56,7 @@ export function AllPreviousRaffles() {
   } else {
     return (
       <div className='mt-3 text-center'>
-        <h1>Connect Wallet to start using Bucket Raffle System.</h1>
+        <h1>Connect Wallet to start using Sui Raffle.</h1>
         <div className='mt-3'>
           <ConnectToWallet></ConnectToWallet>
         </div>

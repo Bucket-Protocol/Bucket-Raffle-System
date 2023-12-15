@@ -1,4 +1,4 @@
-# Bucket Raffle System
+# Sui Raffle
 
 Website: https://raffle.bucketprotocol.io
 
@@ -9,7 +9,7 @@ Demo Video: https://youtu.be/mcoCglvjsXI
 ![image](https://github.com/Bucket-Protocol/Bucket-Raffle-System/assets/43432631/67e40ccb-fa6e-4d03-8b7e-578c408578f7)
 
 ## What it does
-Users can conduct raffles directly on Sui using the Bucket Raffle System. The prize distribution will be done on the Sui Network when the random result is settled. The Bucket Raffle System allows you to raffle anything from Coin to NFT. Moreover, we are developing a joinable raffle that enables other users to participate raffle by paying the ticket fee specified by the host.
+Users can conduct raffles directly on Sui using the Sui Raffle. The prize distribution will be done on the Sui Network when the random result is settled. The Sui Raffle allows you to raffle anything from Coin to NFT. Moreover, we are developing a joinable raffle that enables other users to participate raffle by paying the ticket fee specified by the host.
 
 
 
